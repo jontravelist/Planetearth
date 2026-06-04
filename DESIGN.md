@@ -57,13 +57,17 @@ async turn-based PvP addictive.
 Readable for newcomers, min-maxable for geeks. Each weapon has delivery, impact,
 and blowback.
 
-| Weapon | Beats | Countered by | Flavor |
-|--------|-------|--------------|--------|
-| Hurricane | coastal cities, navies | cloud-seeding (rains it out early) | wide area, *drifts* — placement risk |
-| Heat Dome | shields, crops | incoming rain/storms | slow multi-turn siege |
-| Flash Freeze | enemy energy grid | heat dome | instant, expensive stun |
-| Tornado Swarm | fortified targets | flash freeze (cold kills rotation) | precise sniper |
-| Lightning Barrage | tech / research nodes | pressure shield | disables enemy buildings |
+Every weapon is a **recipe of charges** (see §6). The recipe is what ties a
+weapon to a faction's home terrain — and what a player must source elsewhere to
+build "foreign" weapons.
+
+| Weapon | Recipe | Beats | Countered by | Flavor |
+|--------|--------|-------|--------------|--------|
+| Hurricane | 💧💧 🌬️ | coastal cities, navies | cloud-seeding (rains it out early) | wide area, *drifts* — placement risk |
+| Heat Dome | 🔥🔥🔥 | shields, crops | incoming rain/storms | slow multi-turn siege |
+| Flash Freeze | ❄️❄️ | enemy energy grid | heat dome | instant, expensive stun |
+| Tornado Swarm | 🌬️ ⚡ 🔥 | fortified targets | flash freeze (cold kills rotation) | precise sniper |
+| Lightning Barrage | ⚡⚡ 🌬️ | tech / research nodes | pressure shield | disables enemy buildings |
 
 **Counters as verbs:** seed clouds to rain out a hurricane; heat the air to melt
 a blizzard; raise a pressure shield over your capital.
@@ -87,15 +91,73 @@ Each faction has:
 - a **passive** (e.g. Sun Cartel regens energy on sunny turns),
 - a **weakness** (home climate is vulnerable to the opposite force).
 
+**Identity is a starting bias, not a cage.** Your faction is *born fluent* in
+2–3 charges (cheap, abundant) and nearly mute in the rest. But every charge —
+and therefore every weapon — is reachable. Mastery = learning to think and
+fight like all four factions. See §6 for how foreign skills are acquired.
+
 Collecting/leveling factions = long-term meta-progression.
 
 ---
 
-## 6. Resources (kept lean for "medium" complexity)
+## 6. The Charge System (the core economy)
 
-- **Energy** — fuel for weather machines (solar / wind / thermal / ocean), tied to terrain
-- **Tech** — small research tree: bigger storms, faster delivery, better shields
-- **Territory** — climate footprint; expanding it grows your power base
+One mechanic does two jobs: it *creates* faction identity AND it *prevents*
+factions from being limiting. Every weapon is a recipe of five elemental
+atmospheric charges.
+
+| Charge | Symbol | Produced abundantly by |
+|--------|--------|------------------------|
+| Heat | 🔥 | Sun Cartel (deserts) |
+| Cold | ❄️ | Northern Pact (arctic) |
+| Moisture | 💧 | Maritime League (oceans) |
+| Pressure / Wind | 🌬️ | Storm Syndicate (mountains) |
+| Static | ⚡ | Storm Syndicate (mountains) |
+
+- Each turn, your **terrain generates charges** — 2–3 cheaply (your faction's
+  fluency), the rest only trickle in.
+- Weapons cost combos of charges (§4), so a desert player finds heat domes cheap
+  and blizzards expensive/foreign — identity emerges naturally from the economy.
+
+### Learning other factions (no permanent lock-out)
+
+Four paths to acquire foreign charges and the skills they unlock:
+
+1. **Conquest** — capture enemy terrain and it generates *its* charge for you.
+   Take their land, take their weather.
+2. **Research** — a tech branch builds a *refinery* that synthesizes a foreign
+   charge slowly and at a premium (the peaceful, costly route).
+3. **Trade / espionage** — swap surplus charges with allies, or steal a weapon
+   blueprint in battle.
+4. **Environmental drift** — as the Doomsday Meter (§7) rises, the whole map
+   warms: 🔥 gets cheaper for everyone, ❄️ scarcer. The dying planet reshapes
+   the economy.
+
+A master player ends up fluent in all five charges — fielding hybrid arsenals
+no single faction could build alone.
+
+---
+
+## 6a. Progression — the slow build
+
+The **Build** move has real depth. Two layers:
+
+**Within a match**
+- **Stockpiling** — charges bank turn-over-turn. Spend now on a cheap jab, or
+  save for a devastating supercharged strike? This risk/reward is the heartbeat
+  of every turn.
+- **Refineries & infrastructure** — buildings that raise charge output
+  (compounding economy).
+- **Weapon tiers** — Hurricane I → II → III: bigger, less drift, cheaper per
+  use. Upgrades cost accumulated charges + research over several turns.
+
+**Across matches (meta-progression)**
+- **Faction levels & permanent blueprint unlocks** — long-game retention.
+- **Weapon mastery** — use a weapon enough and it permanently improves.
+
+Intended match rhythm: **early jabs → mid-game economy build → late-game
+supercharged haymakers**, with constant temptation to overreach (and the
+Doomsday Meter punishing everyone who does).
 
 ---
 

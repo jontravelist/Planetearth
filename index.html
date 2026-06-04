@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Weather War — Prototype</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header id="topbar">
+      <div class="brand">⚡ WEATHER WAR <span class="tag">prototype</span></div>
+      <div class="turn">Turn <span id="turnNum">1</span></div>
+    </header>
+
+    <!-- Doomsday meter -->
+    <section id="doomsday">
+      <div class="doom-label">🌡️ DOOMSDAY METER <span id="doomVal">0</span>%</div>
+      <div class="doom-track"><div id="doomFill" class="doom-fill"></div></div>
+      <div class="doom-hint">If this fills, the planet dies — <em>everyone</em> loses.</div>
+    </section>
+
+    <!-- Enemy panel -->
+    <section class="player enemy" id="enemyPanel">
+      <div class="p-head">
+        <span class="p-name" id="enemyName">Enemy</span>
+        <span class="p-motto" id="enemyMotto"></span>
+        <span class="p-poll" id="enemyPoll" title="Pollution contribution"></span>
+      </div>
+      <div class="hp-row">
+        <div class="hp-track"><div class="hp-fill enemy-fill" id="enemyHp"></div></div>
+        <span class="hp-num" id="enemyHpNum">100</span>
+      </div>
+      <div class="charges" id="enemyCharges"></div>
+      <div class="builds" id="enemyBuilds"></div>
+    </section>
+
+    <!-- Battle log -->
+    <section id="logWrap">
+      <div id="log"></div>
+    </section>
+
+    <!-- Player panel -->
+    <section class="player you" id="youPanel">
+      <div class="p-head">
+        <span class="p-name" id="youName">You</span>
+        <span class="p-motto" id="youMotto"></span>
+        <span class="p-poll" id="youPoll" title="Pollution contribution"></span>
+      </div>
+      <div class="hp-row">
+        <div class="hp-track"><div class="hp-fill you-fill" id="youHp"></div></div>
+        <span class="hp-num" id="youHpNum">100</span>
+      </div>
+      <div class="charges" id="youCharges"></div>
+      <div class="builds" id="youBuilds"></div>
+    </section>
+
+    <!-- Action bar -->
+    <nav id="actions">
+      <button class="act" data-act="strike">🎯<span>Strike</span></button>
+      <button class="act" data-act="shield">🛡️<span>Shield</span></button>
+      <button class="act" data-act="fortify">⚙️<span>Fortify</span></button>
+      <button class="act" data-act="refinery">🏭<span>Refinery</span></button>
+      <button class="act" data-act="upgrade">🔬<span>Upgrade</span></button>
+    </nav>
+
+    <!-- Modal picker -->
+    <div id="modal" class="hidden">
+      <div class="modal-card">
+        <div class="modal-title" id="modalTitle">Choose</div>
+        <div class="modal-list" id="modalList"></div>
+        <button id="modalClose">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Game over -->
+    <div id="gameover" class="hidden">
+      <div class="go-card">
+        <div class="go-title" id="goTitle">Victory</div>
+        <div class="go-sub" id="goSub"></div>
+        <button id="goAgain">Play again</button>
+      </div>
+    </div>
+
+    <!-- Faction select -->
+    <div id="setup">
+      <div class="setup-card">
+        <div class="setup-title">⚡ WEATHER WAR</div>
+        <div class="setup-sub">2087. Whoever controls the sky controls the world.<br/>Choose your weather-state.</div>
+        <div class="faction-grid" id="factionGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

@@ -216,14 +216,33 @@ planet stays central to every decision.
 
 ---
 
+## 8a. Prototype (built — vs AI)
+
+A playable vertical slice ships in this repo: `index.html` + `styles.css` +
+`game.js` (zero dependencies; open the file or serve with
+`python3 -m http.server`). It implements the five charges, faction bias, all
+five weapon recipes & counters, blind-commit turns vs a heuristic AI, the
+slow-build economy (fortify / refineries / weapon upgrades), the Doomsday Meter,
+and both comeback mechanics. Headless soak test: 300 games, 0 errors, ~10 turns
+average — good async pacing. See `README.md` to play.
+
+What it intentionally abstracts for v1 (vs the full design):
+- **Map/territory** — collapsed to a single capital-integrity bar per side;
+  Cornered keys off integrity rather than land. A real map layer is next.
+- **Multiplayer** — local vs-AI only; async networking not yet wired.
+- **Trade/espionage & eco-victory** win path — not in the slice yet.
+
+---
+
 ## 9. Open Questions / Next Steps
 
-- Map model: hex grid? region nodes? abstract lanes?
+- Map model: hex grid? region nodes? abstract lanes? (prototype uses none yet)
 - Turn timer for async (24h? configurable?)
 - Match size: strictly 1v1, or free-for-all with 3-4 factions?
 - Monetization: cosmetic faction skins? battle pass? premium campaign?
-- First prototype target: vs-AI single-player to prove the combat triangle is fun
-  before adding networking.
+- ~~First prototype target: vs-AI single-player~~ — **done** (see §8a).
+- Next build targets: add a territory layer, tune per-faction balance, wire
+  real async multiplayer.
 
 ---
 

@@ -119,6 +119,21 @@ atmospheric charges.
 - Weapons cost combos of charges (§4), so a desert player finds heat domes cheap
   and blizzards expensive/foreign — identity emerges naturally from the economy.
 
+### Scarcity tuning (foreign skills must be earned)
+
+Rule of thumb: **native charges flow ~4× faster than foreign ones, and foreign
+charges produce nothing until you invest in a tap.**
+
+- **Native charges:** generated free, every turn, from home terrain.
+- **Foreign charges:** start at **0 output.** You must open a source first:
+  - **Refinery** (research route): ~1 charge every **2–3 turns**, limited number
+    runnable at once, with upkeep. Slow and deliberate.
+  - **Conquest** (territory route): captured land produces its charge at full
+    native speed — but it sits exposed on the front line and can be retaken.
+- **Net effect:** a single foreign weapon is a multi-turn mid-game project, not
+  an impulse buy. Hybrid identity is committed to over time, so pulling off a
+  Sun-Cartel blizzard feels earned, not routine.
+
 ### Learning other factions (no permanent lock-out)
 
 Four paths to acquire foreign charges and the skills they unlock:
@@ -169,6 +184,26 @@ Every weapon damages the shared global climate. A global **Doomsday Meter**
 - If it maxes out, **everyone loses** — the planet dies (MAD-style tension).
 - Creates real decisions: escalate, or propose a ceasefire?
 - Argues that weaponizing nature is a doomsday spiral — without preaching.
+
+---
+
+## 7a. Comeback mechanics (anti-snowball)
+
+A pure slow-build economy lets a leader snowball. Two on-theme correctives keep
+matches close without feeling like artificial rubber-banding:
+
+- **Cornered / Last Stand** — as a player *loses* territory, their remaining
+  charge output gains a concentration multiplier (up to ~+50% near defeat).
+  Fiction: a desperate state pours everything into its last patch of sky.
+  Finishing an opponent is genuinely dangerous; lazy snowballing is punished.
+- **Doomsday Backlash** — the player who has contributed *most* to the Doomsday
+  Meter suffers escalating instability: their own storms drift, misfire, and
+  rebound. The aggressor poisons their own well. This is the thematic heart —
+  fighting dirtiest hurts the bully most, teaching the environmental lesson
+  through mechanics rather than text.
+
+Together: the leader can't steamroll, the dirtiest player self-limits, and the
+planet stays central to every decision.
 
 ---
 

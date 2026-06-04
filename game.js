@@ -6,7 +6,7 @@
    ============================================================ */
 
 const CHARGE_EMOJI = {
-  heat: "🔥", cold: "❄️", moisture: "💧", pressure: "🌬️", static: "⚡",
+  heat: "🔥", cold: "❄️", moisture: "💧", pressure: "💨", static: "⚡",
 };
 const CHARGE_KEYS = Object.keys(CHARGE_EMOJI);
 
@@ -91,7 +91,7 @@ function corneredMult(p) {
 function applyIncome(p, silent) {
   if (p.frozen) {
     p.frozen = false;
-    if (!silent) log(p.isHuman ? "you" : "enemy", `${who(p)} economy is frozen — no charges this turn.`);
+    if (!silent) log(p.isHuman ? "you" : "enemy", `${whoPoss(p)} economy is frozen — no charges this turn.`);
     return;
   }
   const mult = corneredMult(p);
@@ -244,10 +244,10 @@ function doStrike(attacker, defender, wKey, defenderShield) {
 
   // Side effects.
   if (w.dot) { defender.burn += w.dot; }
-  if (w.freeze) { defender.frozen = true; log(cls, `❄️ ${who(defender)}'s economy will freeze next turn.`); }
+  if (w.freeze) { defender.frozen = true; log(cls, `❄️ ${whoPoss(defender)} economy will freeze next turn.`); }
   if (w.sabotage && defender.refineries.length) {
     const lost = defender.refineries.pop();
-    log(cls, `⚡ Strike destroys ${who(defender)}'s ${CHARGE_EMOJI[lost.charge]} refinery.`);
+    log(cls, `⚡ Strike destroys ${whoPoss(defender)} ${CHARGE_EMOJI[lost.charge]} refinery.`);
   }
 }
 
@@ -346,6 +346,7 @@ function pickForeignCharge(p) {
 /* ---------------- rendering ---------------- */
 
 function who(p) { return p.isHuman ? "You" : FACTIONS[p.factionId].name; }
+function whoPoss(p) { return p.isHuman ? "Your" : FACTIONS[p.factionId].name + "'s"; }
 
 function render() {
   document.getElementById("turnNum").textContent = G.turn;

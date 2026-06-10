@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Weather War — Live Map Demo</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; height: 100%; background: #050a12; overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #eaf2fb; }
+    #stage { position: fixed; inset: 0; }
+    #bg, #fx { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    #hud { position: fixed; top: 0; left: 0; right: 0; padding: 12px 14px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(180deg, rgba(5,10,18,0.7), rgba(5,10,18,0)); pointer-events: none; }
+    .title { font-weight: 800; letter-spacing: 0.5px; }
+    .title small { color: #8aa0bb; font-weight: 600; }
+    .legend { font-size: 11px; color: #9fb4cd; }
+    .legend b { color: #ff8a4c; } .legend i { color: #9bdcff; font-style: normal; }
+    #bar { position: fixed; bottom: 0; left: 0; right: 0; display: grid;
+      grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 12px 14px 18px;
+      background: linear-gradient(0deg, rgba(5,10,18,0.85), rgba(5,10,18,0)); }
+    .b { display: flex; flex-direction: column; align-items: center; gap: 3px;
+      background: rgba(20,30,45,0.8); border: 1px solid #28384e; color: #eaf2fb;
+      border-radius: 14px; padding: 10px 4px 8px; font-size: 20px; cursor: pointer; backdrop-filter: blur(4px); }
+    .b span { font-size: 10px; font-weight: 700; color: #9fb4cd; }
+    .b:active { transform: scale(0.94); }
+    .hint { position: fixed; bottom: 92px; left: 0; right: 0; text-align: center;
+      font-size: 12px; color: #7f95af; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <canvas id="bg"></canvas>
+    <canvas id="fx"></canvas>
+  </div>
+
+  <div id="hud">
+    <div class="title">⚡ WEATHER WAR <small>live map</small></div>
+    <div class="legend"><i>cold</i> ◄ temperature ► <b>hot</b></div>
+  </div>
+
+  <div class="hint">Tap the map to strike there, or use the arsenal ↓</div>
+
+  <nav id="bar">
+    <button class="b" data-fx="hurricane">🌀<span>Hurricane</span></button>
+    <button class="b" data-fx="heatdome">🔆<span>Heat Dome</span></button>
+    <button class="b" data-fx="freeze">❄️<span>Freeze</span></button>
+    <button class="b" data-fx="tornado">🌪️<span>Tornado</span></button>
+    <button class="b" data-fx="reset">🌬️<span>Calm</span></button>
+  </nav>
+
+  <script src="weathermap.js"></script>
+  <script>
+    const map = WeatherMap.init(document.getElementById("bg"), document.getElementById("fx"));
+    let lastFx = "hurricane";
+
+    document.querySelectorAll("#bar .b").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const fx = btn.dataset.fx;
+        if (fx === "reset") return map.reset();
+        lastFx = fx;
+        map.applyEffect(fx);
+      });
+    });
+
+    // Tap the map to place the last-used effect at that spot.
+    document.getElementById("fx").addEventListener("pointerdown", (e) => {
+      const r = e.currentTarget.getBoundingClientRect();
+      map.applyEffect(lastFx, (e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
+    });
+  </script>
+</body>
+</html>

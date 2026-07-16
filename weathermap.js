@@ -48,9 +48,21 @@
     t: 0, particles: [], n: 0,
     storms: [],            // active injected effects
     tempLow: null, tcols: 0, trows: 0, tcanvas: null, tctx: null,
-    land: [],              // stylized faction landmasses (faint)
+    land: [],              // land polygons in world coords (real geography)
+    // geographic view window in normalized equirectangular world coords
+    // (x: (lon+180)/360, y: (90-lat)/180). Default: portrait crop of the Americas.
+    view: { x0: (180 - 130) / 360, y0: (90 - 72) / 180, x1: (180 - 55) / 360, y1: (90 + 60) / 180 },
     raf: 0,
   };
+
+  // world-normalized -> canvas px
+  function wx2px(wx) { return (wx - M.view.x0) / (M.view.x1 - M.view.x0) * M.w; }
+  function wy2px(wy) { return (wy - M.view.y0) / (M.view.y1 - M.view.y0) * M.h; }
+  // canvas y -> latitude in degrees (drives the temperature base)
+  function py2lat(py) {
+    const wy = M.view.y0 + (py / M.h) * (M.view.y1 - M.view.y0);
+    return 90 - wy * 180;
+  }
 
   function resize() {
     const rect = M.bg.getBoundingClientRect();
@@ -105,10 +117,10 @@
   }
 
   function tempAt(col, row) {
-    const y = row / (M.trows - 1);
-    // base: cool at poles (top/bottom), warm at equator (middle)
-    let t = 1 - Math.abs(y - 0.5) * 2;       // 0..1
-    t = t * 1.4 - 0.7;                        // -0.7..0.7
+    // base climate from real latitude: warm equator, frigid poles
+    const lat = py2lat((row + 0.5) / M.trows * M.h);
+    let t = Math.cos(lat * Math.PI / 180);   // 1 at equator, 0 at poles
+    t = t * 1.6 - 0.75;                       // ≈ -0.75 (poles) .. 0.85 (equator)
     const px = (col + 0.5) / M.tcols * M.w;
     const py = (row + 0.5) / M.trows * M.h;
     for (const s of M.storms) {
@@ -144,42 +156,70 @@
     return stops[stops.length - 1][1];
   }
 
+  function landPath(b) {
+    b.beginPath();
+    for (const poly of M.land) {
+      for (let i = 0; i < poly.length; i++) {
+        const x = wx2px(poly[i][0]), y = wy2px(poly[i][1]);
+        i ? b.lineTo(x, y) : b.moveTo(x, y);
+      }
+      b.closePath();
+    }
+  }
+
   function paintBackground() {
     const b = M.bctx;
     b.clearRect(0, 0, M.w, M.h);
-    b.fillStyle = "#081320";
+
+    // 1) ocean base
+    const og = b.createLinearGradient(0, 0, 0, M.h);
+    og.addColorStop(0, "#07131f");
+    og.addColorStop(0.5, "#0a1c2c");
+    og.addColorStop(1, "#081522");
+    b.fillStyle = og;
     b.fillRect(0, 0, M.w, M.h);
 
-    // temperature field -> low-res image, drawn smoothed (blurred gradient)
+    // 2) real landmasses: fill + glowing coastline
+    b.save();
+    landPath(b);
+    b.fillStyle = "#182a20";                       // dark terrain green
+    b.fill();
+    b.shadowColor = "rgba(140,210,235,0.5)";       // coastal glow
+    b.shadowBlur = 6;
+    b.strokeStyle = "rgba(170,225,245,0.55)";
+    b.lineWidth = 1.2;
+    b.stroke();
+    b.restore();
+
+    // subtle inland shading so land reads as terrain, not flat fill
+    b.save();
+    landPath(b);
+    b.clip();
+    const lg = b.createLinearGradient(0, 0, M.w, M.h);
+    lg.addColorStop(0, "rgba(90,130,90,0.14)");
+    lg.addColorStop(1, "rgba(40,70,60,0.10)");
+    b.fillStyle = lg;
+    b.fillRect(0, 0, M.w, M.h);
+    b.restore();
+
+    // 3) temperature field over everything (soft tint; land stays visible)
     const img = M.tctx.createImageData(M.tcols, M.trows);
     for (let r = 0; r < M.trows; r++) {
       for (let c = 0; c < M.tcols; c++) {
         const [rr, gg, bb] = tempColor(tempAt(c, r));
         const k = (r * M.tcols + c) * 4;
-        img.data[k] = rr; img.data[k + 1] = gg; img.data[k + 2] = bb; img.data[k + 3] = 150;
+        img.data[k] = rr; img.data[k + 1] = gg; img.data[k + 2] = bb; img.data[k + 3] = 255;
       }
     }
     M.tctx.putImageData(img, 0, 0);
     b.imageSmoothingEnabled = true;
+    b.globalCompositeOperation = "soft-light";
     b.globalAlpha = 0.85;
     b.drawImage(M.tcanvas, 0, 0, M.tcols, M.trows, 0, 0, M.w, M.h);
+    b.globalCompositeOperation = "source-over";
+    b.globalAlpha = 0.10;
+    b.drawImage(M.tcanvas, 0, 0, M.tcols, M.trows, 0, 0, M.w, M.h);
     b.globalAlpha = 1;
-
-    // faint stylized landmasses (faction territories)
-    b.save();
-    b.globalAlpha = 0.16;
-    b.fillStyle = "#0c1a12";
-    b.strokeStyle = "rgba(180,220,200,0.25)";
-    b.lineWidth = 1.5;
-    for (const poly of M.land) {
-      b.beginPath();
-      poly.forEach((p, i) => {
-        const x = p[0] * M.w, y = p[1] * M.h;
-        i ? b.lineTo(x, y) : b.moveTo(x, y);
-      });
-      b.closePath(); b.fill(); b.stroke();
-    }
-    b.restore();
   }
 
   function step() {
@@ -235,8 +275,8 @@
       M.bg = bgCanvas; M.fx = fxCanvas;
       M.bctx = bgCanvas.getContext("2d");
       M.fctx = fxCanvas.getContext("2d");
-      // a couple stylized landmasses (normalized coords)
-      M.land = [
+      // real geography if land-data.js is loaded; stylized fallback otherwise
+      M.land = window.LAND_POLYGONS || [
         [[0.05, 0.30], [0.22, 0.20], [0.34, 0.34], [0.28, 0.55], [0.10, 0.60]],
         [[0.55, 0.12], [0.78, 0.18], [0.86, 0.38], [0.70, 0.46], [0.58, 0.30]],
         [[0.48, 0.62], [0.70, 0.66], [0.74, 0.86], [0.50, 0.90], [0.40, 0.74]],
@@ -256,6 +296,14 @@
       return { px, py };
     },
     reset() { M.storms = []; M._dirtyBg = true; },
+    // Pan/zoom the camera to a lon/lat box, e.g. setView(-130, 72, -55, -60) = Americas.
+    setView(lon0, latTop, lon1, latBottom) {
+      M.view = {
+        x0: (lon0 + 180) / 360, y0: (90 - latTop) / 180,
+        x1: (lon1 + 180) / 360, y1: (90 - latBottom) / 180,
+      };
+      M._dirtyBg = true;
+    },
   };
 
   window.WeatherMap = WeatherMap;

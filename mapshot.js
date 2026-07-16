@@ -29,6 +29,15 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   await wait(2200);
   await page.screenshot({ path: "shots/map-3-multi.png" });
 
+  // pan to the EU/Africa theater to show real geography elsewhere
+  await page.evaluate(() => {
+    window.WeatherMap.reset();
+    window.WeatherMap.setView(-20, 72, 55, -38);
+    window.WeatherMap.applyEffect("hurricane", 0.3, 0.35);
+  });
+  await wait(2400);
+  await page.screenshot({ path: "shots/map-4-europe.png" });
+
   await browser.close();
   console.log("map screenshots written to shots/");
 })().catch((e) => { console.error(e); process.exit(1); });

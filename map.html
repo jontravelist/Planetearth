@@ -27,6 +27,12 @@
     .b:active { transform: scale(0.94); }
     .hint { position: fixed; bottom: 92px; left: 0; right: 0; text-align: center;
       font-size: 12px; color: #7f95af; pointer-events: none; }
+    #regions { position: fixed; top: 46px; left: 0; right: 0; display: flex;
+      justify-content: center; gap: 6px; }
+    .r { background: rgba(20,30,45,0.75); border: 1px solid #28384e; color: #9fb4cd;
+      border-radius: 20px; padding: 5px 12px; font-size: 11px; font-weight: 700;
+      cursor: pointer; backdrop-filter: blur(4px); }
+    .r.on { color: #eaf2fb; border-color: #4b6a90; }
   </style>
 </head>
 <body>
@@ -40,6 +46,12 @@
     <div class="legend"><i>cold</i> ◄ temperature ► <b>hot</b></div>
   </div>
 
+  <div id="regions">
+    <button class="r on" data-v="-130,72,-55,-60">Americas</button>
+    <button class="r" data-v="-20,72,55,-38">EU / Africa</button>
+    <button class="r" data-v="60,60,150,-50">Asia / Oceania</button>
+  </div>
+
   <div class="hint">Tap the map to strike there, or use the arsenal ↓</div>
 
   <nav id="bar">
@@ -50,6 +62,7 @@
     <button class="b" data-fx="reset">🌬️<span>Calm</span></button>
   </nav>
 
+  <script src="land-data.js"></script>
   <script src="weathermap.js"></script>
   <script>
     const map = WeatherMap.init(document.getElementById("bg"), document.getElementById("fx"));
@@ -68,6 +81,17 @@
     document.getElementById("fx").addEventListener("pointerdown", (e) => {
       const r = e.currentTarget.getBoundingClientRect();
       map.applyEffect(lastFx, (e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
+    });
+
+    // Region switcher: pan the camera to a different theater of war.
+    document.querySelectorAll("#regions .r").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#regions .r").forEach((b) => b.classList.remove("on"));
+        btn.classList.add("on");
+        const [a, b2, c, d] = btn.dataset.v.split(",").map(Number);
+        map.reset();
+        map.setView(a, b2, c, d);
+      });
     });
   </script>
 </body>

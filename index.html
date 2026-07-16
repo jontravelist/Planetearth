@@ -3,49 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Weather War — Prototype</title>
+  <title>Weather War</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- Living Earth: the game board -->
+  <div id="stage">
+    <canvas id="bg"></canvas>
+    <canvas id="fx"></canvas>
+  </div>
+
   <div id="app">
     <header id="topbar">
-      <div class="brand">⚡ WEATHER WAR <span class="tag">prototype</span></div>
+      <div class="brand">⚡ WEATHER WAR</div>
       <div class="turn">Turn <span id="turnNum">1</span></div>
     </header>
 
     <!-- Doomsday meter -->
     <section id="doomsday">
-      <div class="doom-label">🌡️ DOOMSDAY METER <span id="doomVal">0</span>%</div>
-      <div class="doom-track"><div id="doomFill" class="doom-fill"></div></div>
-      <div class="doom-hint">If this fills, the planet dies — <em>everyone</em> loses.</div>
+      <div class="doom-row">
+        <span class="doom-label">🌡️ DOOMSDAY <span id="doomVal">0</span>%</span>
+        <div class="doom-track"><div id="doomFill" class="doom-fill"></div></div>
+      </div>
     </section>
 
-    <!-- Enemy panel -->
+    <!-- Enemy panel (compact, floats top) -->
     <section class="player enemy" id="enemyPanel">
       <div class="p-head">
         <span class="p-name" id="enemyName">Enemy</span>
         <span class="p-motto" id="enemyMotto"></span>
-        <span class="p-poll" id="enemyPoll" title="Pollution contribution"></span>
+        <span class="p-poll" id="enemyPoll"></span>
       </div>
       <div class="hp-row">
         <div class="hp-track"><div class="hp-fill enemy-fill" id="enemyHp"></div></div>
         <span class="hp-num" id="enemyHpNum">100</span>
       </div>
-      <div class="charges" id="enemyCharges"></div>
-      <div class="builds" id="enemyBuilds"></div>
+      <div class="mini-rows">
+        <div class="charges mini" id="enemyCharges"></div>
+        <div class="builds mini" id="enemyBuilds"></div>
+      </div>
     </section>
 
-    <!-- Battle log -->
+    <!-- Battle log (floats above your panel) -->
     <section id="logWrap">
       <div id="log"></div>
     </section>
 
-    <!-- Player panel -->
+    <!-- Your panel (floats above action bar) -->
     <section class="player you" id="youPanel">
       <div class="p-head">
         <span class="p-name" id="youName">You</span>
         <span class="p-motto" id="youMotto"></span>
-        <span class="p-poll" id="youPoll" title="Pollution contribution"></span>
+        <span class="p-poll" id="youPoll"></span>
       </div>
       <div class="hp-row">
         <div class="hp-track"><div class="hp-fill you-fill" id="youHp"></div></div>
@@ -86,12 +95,16 @@
     <div id="setup">
       <div class="setup-card">
         <div class="setup-title">⚡ WEATHER WAR</div>
-        <div class="setup-sub">2087. Whoever controls the sky controls the world.<br/>Choose your weather-state.</div>
+        <div class="setup-sub">2087. Whoever controls the sky controls the world.<br/>
+          Your war is fought on the real Earth — choose your weather-state.</div>
         <div class="faction-grid" id="factionGrid"></div>
       </div>
     </div>
   </div>
 
+  <script src="land-data.js"></script>
+  <script src="weathermap.js"></script>
+  <script src="mapview.js"></script>
   <script src="game.js"></script>
 </body>
 </html>

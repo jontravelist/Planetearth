@@ -73,6 +73,8 @@ function startGame(playerFaction) {
   applyIncome(G.you, true);
   applyIncome(G.enemy, true);
 
+  if (window.MapView) MapView.setup(G);
+
   document.getElementById("setup").classList.add("hidden");
   document.getElementById("gameover").classList.add("hidden");
   clearLog();
@@ -110,7 +112,7 @@ function applyBurn(p) {
     const d = p.burn;
     p.burn = 0;
     p.integrity = Math.max(0, p.integrity - d);
-    log(p.isHuman ? "you" : "enemy", `🔥 ${who(p)} takes ${d} burn damage.`);
+    log(p.isHuman ? "you" : "enemy", `🔥 ${who(p)} ${p.isHuman ? "take" : "takes"} ${d} burn damage.`);
   }
 }
 
@@ -209,6 +211,7 @@ function applyNonStrike(p, a) {
 function doStrike(attacker, defender, wKey, defenderShield) {
   const w = WEAPONS[wKey];
   pay(attacker, w.cost);
+  if (window.MapView) MapView.strike(wKey, defender);
 
   let dmg = w.dmg * upgradeMult(attacker, wKey);
 
@@ -240,7 +243,7 @@ function doStrike(attacker, defender, wKey, defenderShield) {
   G.doom = Math.min(DOOM_MAX, G.doom + w.doom);
 
   const cls = attacker.isHuman ? "you" : "enemy";
-  log(cls, `${w.emoji} ${who(attacker)} hits ${who(defender)} with ${w.name} for ${dmg}.${defenderShield ? " (shielded)" : ""}`);
+  log(cls, `${w.emoji} ${who(attacker)} ${attacker.isHuman ? "hit" : "hits"} ${who(defender)} with ${w.name} for ${dmg}.${defenderShield ? " (shielded)" : ""}`);
 
   // Side effects.
   if (w.dot) { defender.burn += w.dot; }
@@ -357,6 +360,8 @@ function render() {
 
   renderPlayer(G.you, "you");
   renderPlayer(G.enemy, "enemy");
+
+  if (window.MapView) MapView.update();
 
   // Update action affordability
   refreshActionBar();
@@ -528,6 +533,7 @@ function buildFactionSelect() {
 }
 
 function wire() {
+  if (window.MapView) MapView.init();
   actionButtons().forEach((b) => b.addEventListener("click", () => onAction(b.dataset.act)));
   document.getElementById("modalClose").addEventListener("click", closeModal);
   document.getElementById("goAgain").addEventListener("click", () => {

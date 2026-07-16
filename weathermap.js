@@ -40,6 +40,7 @@
     heatdome:  { temp: 1.0, swirl: 0.0, push: -0.05, radius: 0.20, color: "#ff8a4c", maxLife: 600, rise: 90 },
     freeze:    { temp: -1.0, swirl: 0.1, push: 0.0, radius: 0.18, color: "#bfe9ff", maxLife: 600, rise: 70 },
     tornado:   { temp: 0.2, swirl: 1.6, push: 0.0, radius: 0.10, color: "#d6b3ff", maxLife: 360, rise: 30 },
+    lightning: { temp: 0.15, swirl: 1.2, push: 0.05, radius: 0.07, color: "#e8d9ff", maxLife: 260, rise: 25 },
   };
 
   const M = {
@@ -220,6 +221,14 @@
     b.globalAlpha = 0.10;
     b.drawImage(M.tcanvas, 0, 0, M.tcols, M.trows, 0, 0, M.w, M.h);
     b.globalAlpha = 1;
+
+    // 4) game overlay (territories, capitals) drawn by the host via setOverlayPainter
+    if (M.overlay) {
+      M.overlay(b, {
+        lonlat2px: (lon, lat) => [wx2px((lon + 180) / 360), wy2px((90 - lat) / 180)],
+        w: M.w, h: M.h,
+      });
+    }
   }
 
   function step() {
@@ -296,6 +305,18 @@
       return { px, py };
     },
     reset() { M.storms = []; M._dirtyBg = true; },
+    // Host hook: draw game overlays (territories, capitals) into the bg layer.
+    setOverlayPainter(fn) { M.overlay = fn; M._dirtyBg = true; },
+    // Request a background repaint (e.g. after game state changes).
+    repaint() { M._dirtyBg = true; },
+    // lon/lat -> canvas-fraction coords (for applyEffect targeting).
+    lonlat2frac(lon, lat) {
+      const wx = (lon + 180) / 360, wy = (90 - lat) / 180;
+      return {
+        x: (wx - M.view.x0) / (M.view.x1 - M.view.x0),
+        y: (wy - M.view.y0) / (M.view.y1 - M.view.y0),
+      };
+    },
     // Pan/zoom the camera to a lon/lat box, e.g. setView(-130, 72, -55, -60) = Americas.
     setView(lon0, latTop, lon1, latBottom) {
       M.view = {

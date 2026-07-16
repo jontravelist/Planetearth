@@ -14,7 +14,6 @@
     north:    { lon: 24,  lat: 65, name: "Frosthold",    color: "#bfe9ff" }, // Scandinavia
     storm:    { lon: 88,  lat: 33, name: "Skyforge",     color: "#c9a6ff" }, // Himalayas
   };
-  const FX = { hurricane: "hurricane", heatdome: "heatdome", freeze: "freeze", tornado: "tornado", lightning: "lightning" };
 
   let G = null;
 
@@ -59,8 +58,9 @@
       const c = CAPITALS[side.factionId];
       const [px, py] = api.lonlat2px(c.lon, c.lat);
 
-      // climate footprint: shrinks as the capital takes damage (Cornered, visualized)
-      const r = api.h * (0.05 + 0.13 * Math.max(0, side.integrity) / 100);
+      // climate footprint: shrinks as the city takes damage
+      const hp = side.hp != null ? side.hp : side.integrity || 0;
+      const r = api.h * (0.05 + 0.13 * Math.max(0, hp) / 100);
       const grad = b.createRadialGradient(px, py, 0, px, py, r);
       grad.addColorStop(0, c.color + "4d");
       grad.addColorStop(0.65, c.color + "1f");
@@ -91,16 +91,24 @@
     }
   }
 
-  // Detonate a weapon's weather effect over the defender's capital.
-  function strike(wKey, defender) {
+  // Detonate a weather effect over the defender's capital.
+  function strike(fxName, defender) {
     const c = CAPITALS[defender.factionId];
     const f = WeatherMap.lonlat2frac(c.lon, c.lat);
     WeatherMap.applyEffect(
-      FX[wKey] || "tornado",
+      fxName || "tornado",
       f.x + (Math.random() - 0.5) * 0.05,
       f.y + (Math.random() - 0.5) * 0.05
     );
   }
 
-  window.MapView = { init, setup, update, strike, CAPITALS };
+  // Screen-pixel position of a faction's capital (for damage popups).
+  function cityPx(factionId) {
+    const c = CAPITALS[factionId];
+    const f = WeatherMap.lonlat2frac(c.lon, c.lat);
+    const elFx = document.getElementById("fx");
+    return { x: f.x * elFx.clientWidth, y: f.y * elFx.clientHeight };
+  }
+
+  window.MapView = { init, setup, update, strike, cityPx, CAPITALS };
 })();

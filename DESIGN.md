@@ -252,3 +252,38 @@ What it intentionally abstracts for v1 (vs the full design):
 - *Civilization* — tech/territory depth (we take a lighter slice)
 - *Plague Inc.* — systemic spread, dark premise made playable
 - *Words With Friends / Chess apps* — async PvP cadence
+
+---
+
+## 11. v2 Rethink — "Make it playable" (current build)
+
+Playtesting the v1 slice surfaced hard truths:
+
+- **Turn 1 drowned the player** — five charges, weapon recipes, refineries,
+  upgrades, pollution, and doomsday all landed before the first fun moment.
+- **You played the menus, not the map** — the living Earth was a backdrop.
+- **Resolution was invisible** — the blind-commit mind game resolved as log text.
+
+### The v2 core (same fantasy, radically simpler)
+
+- **One resource:** ⚡ Storm Power = min(turn, 10). Grows every turn — cheap
+  jabs early, superweapons late. The "slow build" with zero bookkeeping.
+- **A 3-card hand, one tap per turn.** Cards are the whole interface.
+- **Four elements, one sentence:** 💧 douses 🔥 melts ❄️ stills 💨 scatters 💧.
+  Counter their element → their storm fizzles (×0.5) and yours surges (×1.3).
+  The blind-commit mind game survives intact, now legible.
+- **Faction identity in one rule:** your home element costs 1 less. Plus a
+  faction superweapon at 8 power.
+- **Cinematic resolution:** enemy card reveals, counter callouts, storms bloom
+  over the real cities, damage numbers float, screen shakes, and the whole
+  planet visibly warms as Doomsday rises (WeatherMap.setGlobalHeat).
+- **2 taps from cold start to playing**; three coach hints teach turns 1–3;
+  the full rules fit on one help sheet.
+
+### What moved to the depth roadmap (not deleted — deferred)
+
+The five-charge economy, refineries, weapon tiers, and territory capture are
+strong *second-layer* systems. They return only after the 30-second core is
+proven fun: e.g. charges as a deck-building metagame between matches, and
+territory as best-of-N campaign stakes. Async PvP remains the target: the AI
+seat is exactly the shape of a remote opponent's committed card.

@@ -122,6 +122,7 @@
     const lat = py2lat((row + 0.5) / M.trows * M.h);
     let t = Math.cos(lat * Math.PI / 180);   // 1 at equator, 0 at poles
     t = t * 1.6 - 0.75;                       // ≈ -0.75 (poles) .. 0.85 (equator)
+    t += (M.heatOff || 0) * 0.9;              // global warming as doomsday rises
     const px = (col + 0.5) / M.tcols * M.w;
     const py = (row + 0.5) / M.trows * M.h;
     for (const s of M.storms) {
@@ -307,6 +308,8 @@
     reset() { M.storms = []; M._dirtyBg = true; },
     // Host hook: draw game overlays (territories, capitals) into the bg layer.
     setOverlayPainter(fn) { M.overlay = fn; M._dirtyBg = true; },
+    // Global warming tint, 0..1 — the planet visibly heats as doomsday rises.
+    setGlobalHeat(h) { M.heatOff = Math.max(0, Math.min(1, h)); M._dirtyBg = true; },
     // Request a background repaint (e.g. after game state changes).
     repaint() { M._dirtyBg = true; },
     // lon/lat -> canvas-fraction coords (for applyEffect targeting).

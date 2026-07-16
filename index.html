@@ -3,102 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Weather War</title>
+  <title>Weather Wars</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Living Earth: the game board -->
+  <!-- The living Earth is the board -->
   <div id="stage">
     <canvas id="bg"></canvas>
     <canvas id="fx"></canvas>
   </div>
 
-  <div id="app">
-    <header id="topbar">
-      <div class="brand">⚡ WEATHER WAR</div>
-      <div class="turn">Turn <span id="turnNum">1</span></div>
-    </header>
-
-    <!-- Doomsday meter -->
-    <section id="doomsday">
-      <div class="doom-row">
-        <span class="doom-label">🌡️ DOOMSDAY <span id="doomVal">0</span>%</span>
-        <div class="doom-track"><div id="doomFill" class="doom-fill"></div></div>
-      </div>
-    </section>
-
-    <!-- Enemy panel (compact, floats top) -->
-    <section class="player enemy" id="enemyPanel">
-      <div class="p-head">
-        <span class="p-name" id="enemyName">Enemy</span>
-        <span class="p-motto" id="enemyMotto"></span>
-        <span class="p-poll" id="enemyPoll"></span>
-      </div>
-      <div class="hp-row">
-        <div class="hp-track"><div class="hp-fill enemy-fill" id="enemyHp"></div></div>
-        <span class="hp-num" id="enemyHpNum">100</span>
-      </div>
-      <div class="mini-rows">
-        <div class="charges mini" id="enemyCharges"></div>
-        <div class="builds mini" id="enemyBuilds"></div>
-      </div>
-    </section>
-
-    <!-- Battle log (floats above your panel) -->
-    <section id="logWrap">
-      <div id="log"></div>
-    </section>
-
-    <!-- Your panel (floats above action bar) -->
-    <section class="player you" id="youPanel">
-      <div class="p-head">
-        <span class="p-name" id="youName">You</span>
-        <span class="p-motto" id="youMotto"></span>
-        <span class="p-poll" id="youPoll"></span>
-      </div>
-      <div class="hp-row">
-        <div class="hp-track"><div class="hp-fill you-fill" id="youHp"></div></div>
-        <span class="hp-num" id="youHpNum">100</span>
-      </div>
-      <div class="charges" id="youCharges"></div>
-      <div class="builds" id="youBuilds"></div>
-    </section>
-
-    <!-- Action bar -->
-    <nav id="actions">
-      <button class="act" data-act="strike">🎯<span>Strike</span></button>
-      <button class="act" data-act="shield">🛡️<span>Shield</span></button>
-      <button class="act" data-act="fortify">⚙️<span>Fortify</span></button>
-      <button class="act" data-act="refinery">🏭<span>Refinery</span></button>
-      <button class="act" data-act="upgrade">🔬<span>Upgrade</span></button>
-    </nav>
-
-    <!-- Modal picker -->
-    <div id="modal" class="hidden">
-      <div class="modal-card">
-        <div class="modal-title" id="modalTitle">Choose</div>
-        <div class="modal-list" id="modalList"></div>
-        <button id="modalClose">Cancel</button>
-      </div>
+  <!-- Enemy strip -->
+  <header id="top">
+    <div class="side-strip enemy">
+      <div class="s-names"><b id="enemyName">Enemy</b><span id="enemyCity"></span></div>
+      <div class="s-hp"><div class="hp-track"><div id="enemyHp" class="hp-fill enemy-fill"></div></div><b id="enemyHpNum">100</b></div>
     </div>
-
-    <!-- Game over -->
-    <div id="gameover" class="hidden">
-      <div class="go-card">
-        <div class="go-title" id="goTitle">Victory</div>
-        <div class="go-sub" id="goSub"></div>
-        <button id="goAgain">Play again</button>
-      </div>
+    <div id="doom">
+      <span class="d-label">🌡️ <span id="doomVal">0</span>%</span>
+      <div class="doom-track"><div id="doomFill" class="doom-fill"></div></div>
+      <span class="d-turn">Turn <span id="turnNum">1</span></span>
+      <button id="helpBtn" aria-label="How to play">?</button>
     </div>
+  </header>
 
-    <!-- Faction select -->
-    <div id="setup">
-      <div class="setup-card">
-        <div class="setup-title">⚡ WEATHER WAR</div>
-        <div class="setup-sub">2087. Whoever controls the sky controls the world.<br/>
-          Your war is fought on the real Earth — choose your weather-state.</div>
-        <div class="faction-grid" id="factionGrid"></div>
-      </div>
+  <!-- Center callout -->
+  <div id="banner" class="hidden"></div>
+
+  <!-- Coach hint -->
+  <div id="hint" class="hidden"></div>
+
+  <!-- Your side -->
+  <footer id="bottom">
+    <div class="side-strip you">
+      <div class="s-names"><b id="youName">You</b><span id="youCity"></span></div>
+      <div class="s-hp"><div class="hp-track"><div id="youHp" class="hp-fill you-fill"></div></div><b id="youHpNum">100</b></div>
+    </div>
+    <div id="pips" title="Storm Power"></div>
+    <div id="hand"></div>
+  </footer>
+
+  <!-- Start screen -->
+  <div id="start" class="overlay">
+    <div class="panel">
+      <div class="logo">⚡ WEATHER WARS</div>
+      <div class="tagline">2087. Rival states weaponized the sky.<br/>Break their city before the planet breaks.</div>
+      <div class="faction-grid" id="factionGrid"></div>
+      <button id="playBtn">▶ &nbsp;PLAY</button>
+      <div class="fineprint">One rule: 💧 douses 🔥 melts ❄️ stills 💨 scatters 💧</div>
+    </div>
+  </div>
+
+  <!-- Game over -->
+  <div id="gameover" class="overlay hidden">
+    <div class="panel">
+      <div class="go-title" id="goTitle">Victory</div>
+      <div class="go-sub" id="goSub"></div>
+      <button id="goAgain">Play again</button>
+    </div>
+  </div>
+
+  <!-- Help -->
+  <div id="help" class="overlay hidden">
+    <div class="panel">
+      <div class="h-title">How to play</div>
+      <ol class="h-list">
+        <li>⚡ <b>Storm Power</b> grows +1 every turn (the pips). Cards cost power.</li>
+        <li>🃏 Each turn, <b>tap one card</b>. The enemy secretly picks one too — then both storms hit at once.</li>
+        <li>🔄 <b>Counter their element</b> and their storm fizzles:<br/>
+          <span class="wheel">💧 douses 🔥 · 🔥 melts ❄️ · ❄️ stills 💨 · 💨 scatters 💧</span></li>
+        <li>🏠 Cards of your faction's element cost <b>1 less</b>.</li>
+        <li>🌡️ Damage heats the planet. If Doomsday hits 100%, <b>everyone loses</b>.</li>
+      </ol>
+      <button id="helpClose">Got it</button>
     </div>
   </div>
 

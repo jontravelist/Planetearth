@@ -14,52 +14,37 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   const url = "file://" + path.resolve(__dirname, "index.html");
   await page.goto(url, { waitUntil: "networkidle0" });
 
-  // 1) Faction-select over the living map
+  // 1) Start screen over the living map
   await wait(1800);
-  await page.screenshot({ path: "shots/ui-1-setup.png" });
+  await page.screenshot({ path: "shots/v2-1-start.png" });
 
-  // 2) Compose a clean, representative mid-game state for the showcase shot.
+  // 2) Mid-game state: turn 6, both sides scarred, hand ready
   await page.evaluate(() => {
     startGame("storm");
-    // Force a known opponent + tidy board (avoids RNG ending the game early).
-    G.enemy.factionId = "sun"; // Skyforge (Himalayas) vs Helios Spire (Sahara)
-    G.turn = 8;
-    G.doom = 34;
-    G.you.integrity = 78;
-    G.you.charges = { heat: 1, cold: 0, moisture: 4, pressure: 7, static: 9 };
-    G.you.refineries = [{ charge: "moisture", tick: 1 }];
-    G.you.upgrades = { tornado: 1 };
-    G.you.pollution = 13;
-    G.enemy.integrity = 61;
-    G.enemy.charges = { heat: 6, cold: 0, moisture: 0, pressure: 2, static: 3 };
-    G.enemy.pollution = 19;
-    MapView.setup(G); // reframe camera for the forced matchup
-    clearLog();
-    log("sys", "— Turn 7 —");
-    log("you", "🌪️ You hit Sun Cartel with Tornado Swarm for 37.");
-    log("enemy", "🔆 Sun Cartel hits You with Heat Dome for 9. (shielded)");
-    log("sys", "— Turn 8 —");
-    G.enemy.committed = { type: "strike", weapon: "heatdome" };
-    G.you.committed = null;
+    G.enemy.factionId = "sun";
+    G.turn = 6;
+    G.doom = 28;
+    G.you.hp = 71;
+    G.enemy.hp = 58;
+    MapView.setup(G);
+    G.hand = ["twister", "downpour", "shield"];
     render();
-    setActionsEnabled(true);
-  });
-  await wait(2200); // let wind trails build over the terrain
-  await page.screenshot({ path: "shots/ui-2-game.png" });
-
-  // 3) Weapon picker modal open
-  await page.evaluate(() => { if (!G.over && !G.you.committed) openStrikePicker(); });
-  await wait(200);
-  await page.screenshot({ path: "shots/ui-3-strike.png" });
-  await page.evaluate(() => closeModal());
-
-  // 4) Fire a hurricane and catch it blooming over the enemy capital
-  await page.evaluate(() => {
-    if (!G.over && !G.you.committed) submitPlayerAction({ type: "strike", weapon: "hurricane" });
+    WeatherMap.setGlobalHeat(G.doom / 100);
   });
   await wait(2400);
-  await page.screenshot({ path: "shots/ui-4-impact.png" });
+  await page.screenshot({ path: "shots/v2-2-battle.png" });
+
+  // 3) Play a card and catch the clash mid-resolution
+  await page.evaluate(() => playCard("twister"));
+  await wait(2600); // banners shown, both storms blooming, damage numbers up
+  await page.screenshot({ path: "shots/v2-3-clash.png" });
+
+  // 4) Help sheet
+  await wait(2600);
+  await page.evaluate(() => document.getElementById("help").classList.remove("hidden"));
+  await wait(250);
+  await page.screenshot({ path: "shots/v2-4-help.png" });
 
   await browser.close();
-  console.log("screenshots written to shots/");
+  console.log("v2 screenshots written to shots/");
 })().catch((e) => { console.error(e); process.exit(1); });
